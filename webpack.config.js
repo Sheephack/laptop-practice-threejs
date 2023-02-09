@@ -2,6 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
     mode: 'development',
@@ -28,6 +29,11 @@ module.exports = {
         }),
         new CleanWebpackPlugin(),
         new webpack.HotModuleReplacementPlugin(),
+        new CopyWebpackPlugin({
+            patterns:[
+                {from: 'static'}
+            ]
+        })
     ],
     module: {
         rules:[
@@ -48,6 +54,13 @@ module.exports = {
                 test: /\.(scss|css)$/,
                 use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
             },
+            {
+                test: /\.(glsl|vs|fs|vert|frag|glb|gltf)$/,
+                exclude: /node_modules/,
+                use:[
+                    'raw-loader'
+                ]
+            }
         ]
     }
 }
