@@ -2,6 +2,7 @@ import './styles/main.scss'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper'
 import { TextureLoader } from 'three'
 
 const siteWrapper = document.querySelector('#root')
@@ -25,31 +26,44 @@ const controls = new OrbitControls(camera, renderer.domElement)
 
 
 //helpers
+const axesHelper = new THREE.AxesHelper(5)
+scene.add(axesHelper)
+
 //light
-const light = new THREE.AmbientLight(0x404040,0.11 );
-// const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
-// directionalLight.position.set(1,4,1)
+const light = new THREE.AmbientLight(0x404040,3 );
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+directionalLight.position.set(1,4,1)
 // const targetObject = new THREE.Object3D()
 // scene.add(targetObject)
 // directionalLight.target = targetObject
-// const lightHelp = new THREE.DirectionalLightHelper(directionalLight, 5)
+const lightHelp = new THREE.DirectionalLightHelper(directionalLight, 5)
 scene.add(light)
-// scene.add(directionalLight)
-// scene.add(lightHelp)
+scene.add(directionalLight)
+scene.add(lightHelp)
 
+const windowLightHeight = 0.9;
+const windowLightWidth = 1;
+const windowLightIntensity = 3;
+const windowLight = new THREE.RectAreaLight(0xffffff, windowLightIntensity, windowLightWidth, windowLightHeight)
+windowLight.position.set(4.4,1.45,-3.1);
+windowLight.lookAt(1.5,1.45,0);
+scene.add(windowLight)
+const windowLightHelper = new RectAreaLightHelper(windowLight)
+windowLight.add(windowLightHelper)
 //TODO: Fix Lightning and scale of elements (positioning camera)
 
 const loader = new GLTFLoader();
 loader.load( './assets/models/8000229.glb', function (gltf){
-    gltf.scene.scale.set(12,12,12);
     scene.add(gltf.scene)
+    gltf.scene.position.set(-0.1,0.9,-1.2)
+    
     
 }, undefined, function (error){
     console.log(error);
 });
 
 loader.load( './assets/models/linustechtips-studio-kitchen.glb', function (gltf){
-    gltf.scene.scale.set(12,12,12);
+    // gltf.scene.scale.set(12,12,12);
     scene.add(gltf.scene)
     
 }, undefined, function (error){
@@ -77,6 +91,7 @@ const woodMaterial = new THREE.MeshLambertMaterial({
 
 //camera
 camera.position.set(0, 3.5, 2.5)
+camera.lookAt(-.1,0.9,-1.2)
 
 
 controls.update()
